@@ -6,6 +6,4 @@ class AuthService
   end
 end
 
-server = Konin::RPCServer.new 'auth', handlers: { AuthService: AuthService.new }
-
-server.start
+Konin::RPCServer.start 'auth', handlers: { AuthService: AuthService.new }

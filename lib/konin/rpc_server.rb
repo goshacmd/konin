@@ -1,5 +1,9 @@
 module Konin
   class RPCServer
+    def self.start(*args)
+      new(*args).start
+    end
+
     attr_reader :conn, :ch, :q, :x
     attr_reader :handlers
 
