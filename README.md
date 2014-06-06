@@ -1,5 +1,7 @@
 # Konin
 
+![Konin](konin.png)
+
 Konin is a RabbitMQ-powered library to enable synchronous inter-service
 communication (RPC) in a service-oriented architecture.
 
