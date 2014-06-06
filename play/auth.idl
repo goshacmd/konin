@@ -1,0 +1,3 @@
+interface AuthService {
+  authenticate(login string, password string) bool
+}
