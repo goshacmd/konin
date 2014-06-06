@@ -67,6 +67,12 @@ Access denied: me
 Access granted: root
 ```
 
+## TODO
+
+* generate structs
+* enforce idl schema
+* msgpack instead of json (?)
+
 ## Contributing
 
 1. Fork it (https://github.com/goshakkk/konin/fork )
