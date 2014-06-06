@@ -4,39 +4,31 @@ module Konin
       new(*args).start
     end
 
-    attr_reader :conn, :ch, :q, :x
+    attr_reader :queue
     attr_reader :handlers
 
     def initialize(prefix, handlers:)
       @handlers = handlers
 
-      @conn = Bunny.new
-      @conn.start
-
-      @ch = conn.create_channel
-
-      @q = ch.queue "#{prefix}_rpc_queue"
-      @x = ch.default_exchange
+      @queue = Queue.new "#{prefix}_rpc_queue"
     end
 
     def start
-      q.subscribe(block: true) do |delivery_info, properties, payload|
-        payload = JSON.parse(payload)
+      queue.rpc_loop do |payload|
         iface = payload['interface'].to_sym
         fun = payload['function']
         args = payload['args']
 
         res = handlers[iface].send(fun, *args)
 
-        x.publish(JSON.dump(result: res), routing_key: properties.reply_to, correlation_id: properties.correlation_id)
+        { result: res }
       end
     rescue Interrupt => _
       close
     end
 
     def close
-      ch.close
-      conn.close
+      queue.close
     end
   end
 end
