@@ -30,7 +30,7 @@ class AuthService
   end
 end
 
-server = Konin::RPCServer.new 'auth', interfaces: { AuthService: AuthService.new }
+server = Konin::RPCServer.new 'auth', handlers: { AuthService: AuthService.new }
 
 server.start
 ```

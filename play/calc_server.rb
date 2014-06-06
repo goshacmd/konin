@@ -6,6 +6,6 @@ class CalculatorService
   end
 end
 
-server = Konin::RPCServer.new 'calc', interfaces: { CalculatorService: CalculatorService.new }
+server = Konin::RPCServer.new 'calc', handlers: { CalculatorService: CalculatorService.new }
 
 server.start

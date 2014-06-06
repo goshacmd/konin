@@ -16,19 +16,16 @@ module Konin
       @reply_queue = ch.queue('', exclusive: true)
     end
 
-    def descriptions
-      @description ||= prefixes.map { |p, f| [p, DescriptionParser.parse(f)] }.to_h
+    def contracts
+      @contracts ||= prefixes.map { |p, f| [p, Contract.from_file(f, p)] }.to_h
     end
 
-    def interfaces
-      @interfaces ||=
-        descriptions.map do |prefix, description|
-          [prefix, description.map { |i| [i[:name].to_sym, InterfaceGenerator.generate(prefix, i, self)] }.to_h]
-        end.to_h
+    def handlers
+      @handlers ||= contracts.map { |p, c| [p, c.handlers(self)] }.to_h
     end
 
     def [](prefix)
-      interfaces[prefix]
+      handlers[prefix.to_sym]
     end
 
     def call(prefix, interface, function, args)

@@ -1,10 +1,10 @@
 module Konin
   class RPCServer
     attr_reader :conn, :ch, :q, :x
-    attr_reader :interfaces
+    attr_reader :handlers
 
-    def initialize(prefix, interfaces:)
-      @interfaces = interfaces
+    def initialize(prefix, handlers:)
+      @handlers = handlers
 
       @conn = Bunny.new
       @conn.start
@@ -22,7 +22,7 @@ module Konin
         fun = payload['function']
         args = payload['args']
 
-        res = interfaces[iface].send(fun, *args)
+        res = handlers[iface].send(fun, *args)
 
         x.publish(JSON.dump(result: res), routing_key: properties.reply_to, correlation_id: properties.correlation_id)
       end
