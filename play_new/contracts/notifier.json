@@ -1,0 +1,7 @@
+{
+  "namespace": "play.notifier",
+
+  "service_interface": {
+    "async_functions": [["push_notification", ["string"]]]
+  }
+}

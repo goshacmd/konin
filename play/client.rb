@@ -2,8 +2,8 @@ require 'konin'
 
 client = Konin::RPCClient.new auth: 'auth.json', calc: 'calc.json'
 
-AuthService = client[:auth][:AuthService]
-CalculatorService = client[:calc][:CalculatorService]
+AuthService = client[:auth]
+CalculatorService = client[:calc]
 
 def authenticate(login, password)
   if AuthService.authenticate(login, password)

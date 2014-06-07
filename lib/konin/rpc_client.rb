@@ -1,30 +1,30 @@
 module Konin
   class RPCClient
     attr_reader :queue
-    attr_reader :prefixes
+    attr_reader :services
 
-    def initialize(prefixes = {})
-      @prefixes = prefixes
+    def initialize(services = {})
+      @services = services
 
       @queue = Queue.new '', exclusive: true
     end
 
     def contracts
-      @contracts ||= prefixes.map { |p, f| [p, Contract.from_file(f, p)] }.to_h
+      @contracts ||= services.map { |name, file| [name, Contract.from_file(file)] }.to_h
     end
 
     def handlers
-      @handlers ||= contracts.map { |p, c| [p, c.handlers(self)] }.to_h
+      @handlers ||= contracts.map { |name, contract| [name, contract.handler_for(self)] }.to_h
     end
 
-    def [](prefix)
-      handlers[prefix.to_sym]
+    def [](name)
+      handlers[name.to_sym]
     end
 
-    def call(prefix, interface, function, args)
-      request = { interface: interface, function: function, args: args }
+    def call(ns, function, args)
+      request = { function: function, args: args }
 
-      response = queue.rpc_request(request, "#{prefix}_rpc_queue")
+      response = queue.rpc_request(request, [ns, 'rpc'].join(':'))
 
       response['result']
     end

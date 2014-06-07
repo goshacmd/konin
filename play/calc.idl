@@ -1,3 +1,0 @@
-interface CalculatorService {
-  add(a float, b float) float
-}

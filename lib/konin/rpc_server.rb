@@ -5,21 +5,22 @@ module Konin
     end
 
     attr_reader :queue
-    attr_reader :handlers
+    attr_reader :contract
+    attr_reader :handler
 
-    def initialize(prefix, handlers:)
-      @handlers = handlers
+    def initialize(file_path, handler)
+      @contract = Contract.from_file(file_path)
+      @handler = handler.new
 
-      @queue = Queue.new "#{prefix}_rpc_queue"
+      @queue = Queue.new [contract.namespace, 'rpc'].join(':')
     end
 
     def start
       queue.rpc_loop do |payload|
-        iface = payload['interface'].to_sym
         fun = payload['function']
         args = payload['args']
 
-        res = handlers[iface].send(fun, *args)
+        res = handler.send(fun, *args)
 
         { result: res }
       end

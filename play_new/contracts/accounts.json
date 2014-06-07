@@ -1,0 +1,19 @@
+{
+  "namespace": "play.accounts",
+  "structs": [{
+    "name": "UserAttrs",
+    "fields": [["id", "string"], ["login", "string"], ["signed_up_on", "date"]]
+  }, {
+    "name": "AuthenticationAttempt",
+    "fields": [["login", "string"], ["timestamp", "date"]]
+  }],
+
+  "service_interface": {
+    "functions": [["authenticate", ["string", "string"], "bool"], ["lookup", ["string"], "UserAttrs"]]
+  },
+
+  "notifications": [{
+    "subject": "authentication",
+    "actions": [["succeeded", "AuthenticationAttempt"], ["failed", "AuthenticationAttempt"]]
+  }]
+}

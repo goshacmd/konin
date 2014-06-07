@@ -2,22 +2,19 @@
 
 ![Konin](konin.png)
 
-Konin is a RabbitMQ-powered library to enable synchronous inter-service
+Konin is a RabbitMQ-powered library to enable inter-service
 communication (RPC) in a service-oriented architecture.
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'konin'
 
 ## Quick start
 
-auth.idl:
+auth.json:
 
-```idl
-interface AuthService {
-  authenticate(login string, password string) bool
+```json
+{
+  "namespace": "play.auth",
+  "service_interface": {
+    "functions": [["authenticate", ["string", "string"], "bool"]]
+  }
 }
 ```
 
@@ -32,17 +29,17 @@ class AuthService
   end
 end
 
-Konin::RPCServer.start 'auth', handlers: { AuthService: AuthService.new }
+Konin::RPCServer.start 'auth.json', AuthService
 ```
 
-client.rb
+client.rb:
 
 ```ruby
 require 'konin'
 
 client = Konin::RPCClient.new auth: 'auth.json'
 
-AuthService = client[:auth][:AuthService]
+AuthService = client[:auth]
 
 def authenticate(login, password)
   if AuthService.authenticate(login, password)
@@ -70,8 +67,10 @@ Access granted: root
 ## TODO
 
 * generate structs
-* enforce idl schema
+* enforce schema
 * msgpack instead of json (?)
+* async calls
+* notifications (see `play_new`)
 
 ## Contributing
 
